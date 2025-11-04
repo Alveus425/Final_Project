@@ -209,12 +209,14 @@ class Alu:
                 This is given to you as an example which will help you write
                 the other methods to update flags.
         """
+        b ^= WORD_MASK
+        b += 1
 
         if result & (1 << (WORD_SIZE - 1)):
             self._flags |= N_FLAG
         if result == 0:
             self._flags |= Z_FLAG
-        if ((a - b) >> (WORD_SIZE)) & 1 == 1:
+        if a + b > WORD_MASK:
             self._flags |= C_FLAG
         sa, sb, sr = ((a >> (WORD_SIZE - 1)) & 1,
                       (b >> (WORD_SIZE - 1)) & 1,

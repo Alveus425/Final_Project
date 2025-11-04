@@ -171,7 +171,7 @@ if __name__ == '__main__':
     print("Running ALU self-test...")
 
     for count, t in enumerate(tests, 1):
-        if count <= 6 or count > 10:
+        if count > 10:
             continue
         print(f"\n{t['mnemonic']}: {t['a']}, {t['b']}.")
         print(f"{t['comment']}")
