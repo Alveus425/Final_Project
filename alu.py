@@ -48,7 +48,8 @@ class Alu:
 
     def __init__(self):
         """
-        Here we initialize the ALU when instantiated.
+        Here we
+        initialize the ALU when instantiated.
         """
         self._op = None
         self._flags = 0b0000
@@ -72,9 +73,9 @@ class Alu:
             case 0b001:
                 self._op = "SUB"
             case 0b010:
-                pass  # replace pass with correct assignment
+                self._op = "AND"
             case 0b011:
-                pass  # replace pass with correct assignment
+                self._op = "OR"
             case 0b100:
                 pass  # replace pass with correct assignment
             case _:
@@ -146,14 +147,17 @@ class Alu:
         """
         Bitwise AND
         """
-
-        pass  # replace pass with correct implementation
+        result = (a & b)
+        self._update_logic_flags(result)
+        return result
 
     def _or(self, a, b):
         """
         Bitwise OR
         """
-        pass  # replace pass with correct implementation
+        result = (a | b) & WORD_MASK
+        self._update_logic_flags(result)
+        return result
 
     def _shft(self, a, b):
         """
@@ -185,7 +189,10 @@ class Alu:
         return x
 
     def _update_logic_flags(self, result):
-        pass  # replace pass with correct implementation
+        if result & (1 << (WORD_SIZE - 1)):
+            self._flags |= N_FLAG
+        if result == 0:
+            self._flags |= Z_FLAG
 
     def _update_arith_flags_add(self, a, b, result):
         """
@@ -205,16 +212,14 @@ class Alu:
             self._flags |= V_FLAG
 
     def _update_arith_flags_sub(self, a, b, result):
-        """
-                This is given to you as an example which will help you write
-                the other methods to update flags.
-        """
+        b ^= WORD_MASK
+        b += 1
 
         if result & (1 << (WORD_SIZE - 1)):
             self._flags |= N_FLAG
         if result == 0:
             self._flags |= Z_FLAG
-        if ((a - b) >> (WORD_SIZE)) & 1 == 1:
+        if a + b > WORD_MASK:
             self._flags |= C_FLAG
         sa, sb, sr = ((a >> (WORD_SIZE - 1)) & 1,
                       (b >> (WORD_SIZE - 1)) & 1,
@@ -223,6 +228,23 @@ class Alu:
             self._flags |= V_FLAG
 
     def _update_shift_flags(self, result, bit_out):
-        pass  # replace pass with correct implementation
+
+      if result & (1 << (WORD_SIZE - 1)):
+            self._flags |= N_FLAG
+      if result == 0:
+            self._flags |= Z_FLAG
+
+"""
+- Carry flag under the following conditions:
+    - On a left shift, the carry flag is set to the value of the last
+      bit shifted out. So, for example, in four bits, `0b1001 << 1`
+      would set the carry flag to 1. However, `0b1001 << 2` would set
+      the carry flag to 0, because the last bit shifted out was 0.
+      On a right shift, the carry flag is set to the value of the last
+      bit shifted out on the right. For example, `0b1001 >> 1` would
+      set carry flag to 1, and `0b1001 >> 2` would set carry flag to 0.
+    - In the odd but permitted case of shift by zero, the carry flag
+      is left unchanged."""
+
 
 
