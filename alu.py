@@ -70,7 +70,7 @@ class Alu:
             case 0b000:
                 self._op = "ADD"
             case 0b001:
-                pass  # replace pass with correct assignment
+                self._op = "SUB"
             case 0b010:
                 pass  # replace pass with correct assignment
             case 0b011:
@@ -95,17 +95,17 @@ class Alu:
     @property
     def negative(self):
         # Return negative flag
-        return None  # replace this with correct return statement
+        return bool(self._flags & N_FLAG)
 
     @property
     def carry(self):
         # Return carry flag
-        return None  # replace this with correct return statement
+        return bool(self._flags & C_FLAG)
 
     @property
     def overflow(self):
         # Return overflow flag
-        return None  # replace this with correct return statement
+        return bool(self._flags & V_FLAG)
 
     def execute(self, a, b):
         """
@@ -126,6 +126,7 @@ class Alu:
         """
         a = a & WORD_MASK
         b = b & WORD_MASK
+
         result = (a + b) & WORD_MASK
         self._update_arith_flags_add(a, b, result)
         return result
@@ -134,12 +135,18 @@ class Alu:
         """
         SUB
         """
-        pass  # replace pass with correct implementation
+        a = a & WORD_MASK
+        b = b & WORD_MASK
+        result = (a - b) & WORD_MASK
+
+        self._update_arith_flags_sub(a, b, result)
+        return result
 
     def _and(self, a, b):
         """
         Bitwise AND
         """
+
         pass  # replace pass with correct implementation
 
     def _or(self, a, b):
@@ -198,7 +205,24 @@ class Alu:
             self._flags |= V_FLAG
 
     def _update_arith_flags_sub(self, a, b, result):
-        pass  # replace pass with correct implementation
+        """
+                This is given to you as an example which will help you write
+                the other methods to update flags.
+        """
+
+        if result & (1 << (WORD_SIZE - 1)):
+            self._flags |= N_FLAG
+        if result == 0:
+            self._flags |= Z_FLAG
+        if ((a - b) >> (WORD_SIZE)) & 1 == 1:
+            self._flags |= C_FLAG
+        sa, sb, sr = ((a >> (WORD_SIZE - 1)) & 1,
+                      (b >> (WORD_SIZE - 1)) & 1,
+                      (result >> (WORD_SIZE - 1)) & 1)
+        if sa == sb and sr != sa:
+            self._flags |= V_FLAG
 
     def _update_shift_flags(self, result, bit_out):
         pass  # replace pass with correct implementation
+
+
