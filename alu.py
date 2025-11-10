@@ -148,7 +148,7 @@ class Alu:
         """
         a = a & WORD_MASK
         b = b & WORD_MASK
-        result = (a & b) & WORD_MASK
+        result = a & b
         self._update_logic_flags(result)
         return result
 
@@ -158,7 +158,7 @@ class Alu:
         """
         a = a & WORD_MASK
         b = b & WORD_MASK
-        result = (a | b) & WORD_MASK
+        result = a | b
         self._update_logic_flags(result)
         return result
 
@@ -174,8 +174,19 @@ class Alu:
         a &= WORD_MASK  # Keep this line as is
 
         # Replace these two lines with a complete implementation
-        result = 0
         bit_out = 0
+        result = a
+        shift = abs(b & 0b1111)
+
+        if shift != 0:
+            MSB = (b & WORD_MASK) >> (WORD_SIZE - 1)
+            if MSB == 1:
+                result = (a >> shift) & WORD_MASK
+                bit_out = a >> (shift - 1)
+            else:
+                result = (a << shift) & WORD_MASK
+                bit_out = (a & WORD_MASK) << (shift - 1)
+                bit_out = bit_out >> (WORD_SIZE - 1)
 
         # Keep these last two lines as they are
         self._update_shift_flags(result, bit_out)
@@ -235,6 +246,13 @@ class Alu:
             self._flags |= V_FLAG
 
     def _update_shift_flags(self, result, bit_out):
-        pass  # replace pass with correct implementation
+        sr = (result >> (WORD_SIZE - 1)) & 1
+        if sr == 1:
+            self._flags |= N_FLAG
+        if result == 0:
+            self._flags |= Z_FLAG
+        if bit_out == 1:
+            self._flags |= C_FLAG
+
 
 
