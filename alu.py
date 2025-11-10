@@ -1,4 +1,7 @@
 """
+Final Project
+CS 2210
+Quinn Tyldesley and Eli Adams
 Starter code for Catamount Processor Unit ALU
 
 We are limited to 16 bits, and five operations: ADD, SUB, AND, OR, and SHFT.

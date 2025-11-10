@@ -1,4 +1,7 @@
 """
+Final Project
+CS 2210
+Quinn Tyldesley and Eli Adams
 Constants used by our Catamount Processor Unit.
 """
 
