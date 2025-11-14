@@ -64,6 +64,16 @@ class Alu:
             "SHFT" : self._shft
         }
 
+    def set_op(self, op):
+        """
+        Public-facing setter. Added 2025-11-09. Students will need to add this
+        to their ALU implementation.
+        """
+        if op in self._ops.keys():
+            self._op = op
+        else:
+            raise ValueError(f"Bad op: {op}")
+
     def decode(self, c):
         """
         Decode control signal to determine operation.
@@ -178,7 +188,7 @@ class Alu:
 
         # Replace these two lines with a complete implementation
         bit_out = 0
-        result = a
+        result = 0
         shift = abs(b & 0b1111)
 
         if shift != 0:
