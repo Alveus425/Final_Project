@@ -188,7 +188,7 @@ class Alu:
 
         # Replace these two lines with a complete implementation
         bit_out = 0
-        result = 0
+        result = a
         shift = abs(b & 0b1111)
 
         if shift != 0:
