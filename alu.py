@@ -77,7 +77,7 @@ class Alu:
             case 0b011:
                 self._op = "OR"
             case 0b100:
-                pass  # replace pass with correct assignment
+                self._op = "SHFT"
             case _:
                 raise ValueError("Invalid control signal")
         # Return value is for testing.
@@ -171,8 +171,17 @@ class Alu:
         a &= WORD_MASK  # Keep this line as is
 
         # Replace these two lines with a complete implementation
-        result = 0
+
+        if(b > 0):
+            a = a << b & WORD_MASK
+
+        elif(b < 0):
+            a = a >> b & WORD_MASK
+          
+
         bit_out = 0
+        result = a
+
 
         # Keep these last two lines as they are
         self._update_shift_flags(result, bit_out)
@@ -233,6 +242,9 @@ class Alu:
             self._flags |= N_FLAG
       if result == 0:
             self._flags |= Z_FLAG
+
+      if  bit_out != 0:
+            self._flags |= C_FLAG
 
 """
 - Carry flag under the following conditions:
