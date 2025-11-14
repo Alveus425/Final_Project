@@ -1,8 +1,8 @@
 """
-Final Project
-CS 2210
-Quinn Tyldesley and Eli Adams
 Constants used by our Catamount Processor Unit.
+
+CS 2210 Computer Organization
+Clayton Cafiero <cbcafier@uvm.edu>
 """
 
 WORD_SIZE = 16  # 16 bits = 2 bytes

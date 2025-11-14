@@ -1,4 +1,7 @@
 """
+Final Project
+CS 2210
+Quinn Tyldesley and Eli Adams
 Starter code for Catamount Processor Unit ALU
 
 We are limited to 16 bits, and five operations: ADD, SUB, AND, OR, and SHFT.
@@ -48,8 +51,7 @@ class Alu:
 
     def __init__(self):
         """
-        Here we
-        initialize the ALU when instantiated.
+        Here we initialize the ALU when instantiated.
         """
         self._op = None
         self._flags = 0b0000
@@ -61,6 +63,16 @@ class Alu:
             "OR"   : self._or,
             "SHFT" : self._shft
         }
+
+    def set_op(self, op):
+        """
+        Public-facing setter. Added 2025-11-09. Students will need to add this
+        to their ALU implementation.
+        """
+        if op in self._ops.keys():
+            self._op = op
+        else:
+            raise ValueError(f"Bad op: {op}")
 
     def decode(self, c):
         """
@@ -147,7 +159,9 @@ class Alu:
         """
         Bitwise AND
         """
-        result = (a & b)
+        a = a & WORD_MASK
+        b = b & WORD_MASK
+        result = a & b
         self._update_logic_flags(result)
         return result
 
@@ -155,7 +169,9 @@ class Alu:
         """
         Bitwise OR
         """
-        result = (a | b) & WORD_MASK
+        a = a & WORD_MASK
+        b = b & WORD_MASK
+        result = a | b
         self._update_logic_flags(result)
         return result
 
@@ -171,17 +187,19 @@ class Alu:
         a &= WORD_MASK  # Keep this line as is
 
         # Replace these two lines with a complete implementation
-
-        if(b > 0):
-            a = a << b & WORD_MASK
-
-        elif(b < 0):
-            a = a >> b & WORD_MASK
-          
-
         bit_out = 0
-        result = a
+        result = 0
+        shift = abs(b & 0b1111)
 
+        if shift != 0:
+            MSB = (b & WORD_MASK) >> (WORD_SIZE - 1)
+            if MSB == 1:
+                result = (a >> shift) & WORD_MASK
+                bit_out = a >> (shift - 1)
+            else:
+                result = (a << shift) & WORD_MASK
+                bit_out = (a & WORD_MASK) << (shift - 1)
+                bit_out = bit_out >> (WORD_SIZE - 1)
 
         # Keep these last two lines as they are
         self._update_shift_flags(result, bit_out)
@@ -221,6 +239,10 @@ class Alu:
             self._flags |= V_FLAG
 
     def _update_arith_flags_sub(self, a, b, result):
+        """
+                This is given to you as an example which will help you write
+                the other methods to update flags.
+        """
         b ^= WORD_MASK
         b += 1
 
@@ -237,26 +259,13 @@ class Alu:
             self._flags |= V_FLAG
 
     def _update_shift_flags(self, result, bit_out):
-
-      if result & (1 << (WORD_SIZE - 1)):
+        sr = (result >> (WORD_SIZE - 1)) & 1
+        if sr == 1:
             self._flags |= N_FLAG
-      if result == 0:
+        if result == 0:
             self._flags |= Z_FLAG
-
-      if  bit_out != 0:
+        if bit_out == 1:
             self._flags |= C_FLAG
-
-"""
-- Carry flag under the following conditions:
-    - On a left shift, the carry flag is set to the value of the last
-      bit shifted out. So, for example, in four bits, `0b1001 << 1`
-      would set the carry flag to 1. However, `0b1001 << 2` would set
-      the carry flag to 0, because the last bit shifted out was 0.
-      On a right shift, the carry flag is set to the value of the last
-      bit shifted out on the right. For example, `0b1001 >> 1` would
-      set carry flag to 1, and `0b1001 >> 2` would set carry flag to 0.
-    - In the odd but permitted case of shift by zero, the carry flag
-      is left unchanged."""
 
 
 
