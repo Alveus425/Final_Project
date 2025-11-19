@@ -61,9 +61,9 @@ class RegisterFile:
         # register objects and include them in a list `self.registers`. Note:
         # register objects should each get a unique name, R0, R1, R2, etc.
         # apart from their index in the list. Replace `pass` below.
-        register_file = []
+        self.registers = []
         for i in range(RegisterFile.NUM_REGISTERS):
-            register_file.append(Register(f"R{i}"))
+            self.registers.append(Register(f"R{i}"))
 
 
     def _check_index(self, idx):
@@ -156,8 +156,7 @@ class RegisterFile:
         `write_enable`: `True` to enable write or `False`
         """
         if write_enable:
-            self._write(rd, data)  # looks like a write
-            return
+            return self._write(rd, data)  # looks like a write
 
         return self._read(ra, rb)  # looks like a read
 
