@@ -1,4 +1,6 @@
 """
+Quinn Tyldesley and Eli Adams
+
 We're going with Harvard architecture here. So we'll have two separate
 address spaces, one for data and one for instructions. A portion of data
 memory is reserved for the stack (addresses between 0xFFFF and 0xFF00).
@@ -12,6 +14,9 @@ First released: 2025-11-10
   Revision: 2025-11-12
   - Moved definition of `STACK_BASE` to `constants.py`.
 """
+from os import write
+
+import pytest
 
 from constants import STACK_BASE, WORD_SIZE
 
@@ -27,13 +32,20 @@ class Memory:
     def _check_addr(self, address):
         # Make sure address is positive, in the desired range,
         # otherwise raise a `ValueError`. Replace `pass` below.
-        pass
+        if address < 0 or address > 0xFFFF:
+            raise ValueError()
 
     def write_enable(self, b):
         # Make sure `b` is a Boolean (hint: use `isinstance()).
         # If not, raise `TypeError`. If OK, then set
         # `_write_enable` accordingly. Replace `pass` below.
-        pass
+            if not isinstance(b, bool):
+                raise TypeError("Non-Boolean value given")
+            self._write_enable = b
+
+
+
+
 
     def read(self, addr):
         """
@@ -42,7 +54,12 @@ class Memory:
         # Make sure `addr` is OK by calling `_check_addr`. If OK, return value
         # from `_cells` or default if never written. (Hint: use `.get()`.)
         # Replace `pass` below.
-        pass
+        self._check_addr(addr)
+
+        if self._cells.get(addr) != None:
+            return self._cells.get(addr)
+        else:
+            return 0
 
     def write(self, addr, value):
         """
@@ -52,8 +69,15 @@ class Memory:
         # Otherwise, call `_check_addr()`. If OK, write masked value to the
         # selected address, then turn off `_write_enable` when done. Return
         # `True` on success. Replace `pass` below.
-        pass
-        return True
+        if self._write_enable:
+            self._check_addr(addr)
+            self._cells[addr] = value
+            self._write_enable = False
+            return True
+        else:
+            raise RuntimeError()
+
+
 
     def hexdump(self, start=0, stop=None, width=8):
         """
@@ -120,12 +144,25 @@ class InstructionMemory(Memory):
         Load list of 16-bit words into consecutive memory cells.
         """
         self._loading = True
+
         # Write each word in `words` to successive addresses in instruction
         # memory. Set `_write_enable` as needed can call parent write with
         # `super().write(start_addr + offset, word)` as needed. Important:
         # Ensure that `_loading` and `_write_enable` are set to `False` when
         # done. (Hint: use `try`/`finally`.) Replace `pass` below.
-        pass
+
+
+        try:
+            for offset, word in enumerate(words):
+                  self._write_enable = True
+                  super().write(start_addr + offset, word)
+
+
+
+        finally:
+            self._loading = False
+            self._write_enable = False
+
 
 
 if __name__ == "__main__":
