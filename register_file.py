@@ -66,6 +66,7 @@ class RegisterFile:
             self.registers.append(Register(f"R{i}"))
 
 
+
     def _check_index(self, idx):
         """
         We cannot rely on Python's index out-of-bounds, because we don't want
@@ -103,13 +104,13 @@ class RegisterFile:
         # to ensure we have valid indices. It should *always* return a tuple,
         # the first element of which is the value at `ra`, the second element
         # of which is the value at `rb` or `None`. Replace `pass` below.
-        if (ra is None and rb is None):
+        if ra is None and rb is None:
             raise TypeError("Cannot read; no source register(s) specified!")
-        elif (ra is None):
+        elif ra is None:
             raise TypeError("Cannot read; single register read should specify `ra`!")
-        elif (rb is None and self._check_index(ra)):
+        elif rb is None and self._check_index(ra):
             return tuple(ra.read(), None)
-        elif (self._check_index(ra) and self._check_index(rb)):
+        elif self._check_index(ra) and self._check_index(rb):
             return tuple(ra.read(), rb.read())
 
 
@@ -140,11 +141,11 @@ class RegisterFile:
         # method should call `_check_index()` to ensure index is good. If so,
         # it should call `write()` on the appropriate register, as selected by
         # `rd`. Replace `pass` below.
-        if (rd is None):
+        if rd is None:
             raise TypeError("Cannot write; no destination specified!")
-        elif (data is None):
+        elif data is None:
             raise TypeError("Cannot write; no data!")
-        if (self._check_index(rd)):
+        if self._check_index(rd):
             self._write(rd, data)
 
     def execute(self, rd=None, ra=None, rb=None, data=None, write_enable=False):
