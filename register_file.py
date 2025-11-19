@@ -77,6 +77,8 @@ class RegisterFile:
         # method needn't have an explicit return. Replace `pass` below.
         if idx > RegisterFile.NUM_REGISTERS - 1 or idx < 0:
             raise IndexError("Register index out of bounds!")
+        else:
+            return True
 
 
 
@@ -109,9 +111,9 @@ class RegisterFile:
         elif ra is None:
             raise TypeError("Cannot read; single register read should specify `ra`!")
         elif rb is None and self._check_index(ra):
-            return tuple(ra.read(), None)
+            return self.registers[ra].read(), None
         elif self._check_index(ra) and self._check_index(rb):
-            return tuple(ra.read(), rb.read())
+            return self.registers[ra].read(), self.registers[rb].read()
 
 
 
@@ -146,7 +148,7 @@ class RegisterFile:
         elif data is None:
             raise TypeError("Cannot write; no data!")
         if self._check_index(rd):
-            self._write(rd, data)
+            self.registers[rd].write(data)
 
     def execute(self, rd=None, ra=None, rb=None, data=None, write_enable=False):
         """
