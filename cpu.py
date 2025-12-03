@@ -73,7 +73,13 @@ class Cpu:
             # execute...
             match self._decoded.mnem:
                 case "LOADI":
-                    pass  # complete implementation here
+                    rd = self._decoded.rd
+                    imm = self._decoded.imm & 0xFF
+                    lower, _ = self.regs.execute(ra=rd)
+                    lower &= 0x00FF
+                    data = lower;
+                    self._regs.execute(rd=rd, data=data, write_enable=True)
+
                 case "LUI":
                     # TODO Refactor for future semester(s) if any.
                     # Cheating for compatibility with released ALU tests
