@@ -628,7 +628,6 @@ def test_sub_logic():
     c.tick()  # SUB
     assert c.get_reg(7) == 16  # a - b = 16
 
-@pytest.mark.skip()
 def test_lui_expected_behavior():
     prog = assemble(["LOADI R3, #0", "LUI R3, #0x80"])
     c = make_cpu(prog)

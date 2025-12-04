@@ -93,17 +93,17 @@ class Cpu:
                 case "LOAD":
                     rd = self._decoded.rd
                     ra = self._decoded.ra
+                    base, _ = self._regs.execute(ra=ra)
                     imm = self._decoded.imm
-                    data = self._i_mem.read(ra + self.sext(imm))
+                    data = self._d_mem.read(base + self.sext(imm))
                     self._regs.execute(rd=rd, data=data, write_enable=True)
-                    pass  # complete implementation here
-
                 case "STORE":
                     ra = self._decoded.ra
                     rb = self._decoded.rb
                     imm = self._decoded.imm
-                    rd = rb + self.sext(imm)
-                    self._regs.execute(rd=rd, data=ra, write_enable=True)
+                    data, base = self._regs.execute(ra=ra, rb=rb)
+                    self._d_mem.write_enable(True)
+                    self._d_mem.write(value=data, addr = base + self.sext(imm))
                 case "ADDI":
                     self._alu.set_op("ADD")
                     rd = self.decoded.rd
@@ -177,8 +177,11 @@ class Cpu:
                     self._pc += self.sext(offset, 8)  # jump to target
                 case "RET":
                     # Get return address from memory via SP
+                    ret_addr = self._d_mem.read(self._sp)
                     # Increment SP
+                    self._sp += 1
                     # Update PC
+                    self._pc = ret_addr
                     pass  # complete implementation here
                 case "HALT":
                     self._halt = True
