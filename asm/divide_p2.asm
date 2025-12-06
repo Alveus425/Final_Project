@@ -1,0 +1,29 @@
+LOADI R0, 0xC0
+LUI   R0, 0x01
+
+LOADI R1, 0x06
+LUI   R1, 0x80
+
+SHFT  R7, R0, R1
+
+ADD   R6, R1, R2
+ADDI  R6, R6, -1
+SHFT  R6, R0, R6
+
+ADD   R5, R1, R2
+ADDI  R5, R5, -2
+SHFT  R5, R0, R5
+
+ADD   R4, R1, R2
+ADDI  R4, R4, -3
+SHFT  R4, R0, R4
+
+ADD   R3, R1, R2
+ADDI  R3, R3, -4
+SHFT  R3, R0, R3
+
+ADD   R2, R1, R2
+ADDI  R2, R2, -5
+SHFT  R2, R0, R2
+
+HALT
